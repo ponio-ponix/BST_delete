@@ -40,19 +40,110 @@ class Solution{
             return root;
         }
 
-        // --- 子1・子2は今日は空ブロックでOK ---
-        if (hasLeft ^ hasRight) {
-            // 子1：今日はやらない → 空
-            return root;
+        BinaryTree<Integer> child = (target.left != null) ? target.left : target.right;
+
+    
+        if (!hasLeft ^ !hasRight) {
+            // 子1：
+            if(parent == null){
+                //子ノードがそのままrootになる
+                root = child;
+                return root;
+            }else{
+                if(parent.left == target){
+                    parent.left = child;
+                    return root;
+                }else{
+                    parent.right = child;
+                    return root;
+                }
+            }            
+
         }
 
         if (hasLeft && hasRight) {
-            // 子2：今日はやらない → 空
+            // 子2：
+            BinaryTree<Integer> successor = target;
+            BinaryTree<Integer> successorParent = target;
+
+            
+            
+            while(successor.left != null){
+                BinaryTree<Integer> temp = successor;
+
+                successor = successor.left;
+                successorParent = temp;
+            }
+
+            if(successor == successorParent){
+                // root = child;
+            }
+
+
+
+
+
+
+            int succValue = successor.data;
+
+
+            // System.out.println(successor.data);
+            // if(successor.rigth != null){
+            //     BinaryTree<Integer> successorChild = ;
+            // }
+
+            // BinaryTree<Integer> successorParent = findParent(successor, target.right);
+            // System.out.println(successorParent.data);
+            target.data = succValue;
+
+            deleteSuccessorEdge(successorParent, successor);
+
+
+
             return root;
         }
 
         return root;
     }
+
+    // public static BinaryTree<Integer> findParent(BinaryTree<Integer> successor, BinaryTree<Integer> target){
+    //     BinaryTree<Integer> iterator = target;
+    //     while(iterator.left != successor){
+    //         iterator = iterator.left;
+    //     }
+    //     return iterator;
+
+    // }
+
+
+    public static void deleteSuccessorEdge(BinaryTree<Integer> successorParent, BinaryTree<Integer> successor){
+
+        BinaryTree<Integer> child = successor.right;
+
+        if (successorParent.left == successor){
+            successorParent.left = child;
+        }
+        else if (successorParent.right == successor){
+            successorParent.right = child;
+        }else {
+            throw new IllegalStateException("parent の子に successor がいない。ロジックがおかしい");
+        }
+
+    }
+
+
+
+    // public static BinaryTree<Integer> findMin(BinaryTree<Integer> target){
+    //     while(target.data != null){
+    //         if(target.left == null) return target;
+    //         else target = target.left;
+    //     } 
+    //     return null;
+
+    // }
+
+
+
 
     //searchparentは残して良い
     public static BinaryTree<Integer> searchparent(BinaryTree<Integer> it, BinaryTree<Integer> target){
@@ -90,12 +181,3 @@ class Solution{
 
 
 }
-
-
-// 	•	今日やるのは次の2点だけ：
-// 	1.	bstDelete 内で 子0 / 子1 / 子2 の分岐だけを「コメントと空ブロック」で用意
-// 	2.	そのうち 子0（葉）だけの処理を終える（1ケースだけでOK）
-
-// → ここまでできたら終了。勢いが残っていても深追いしない。
-
-
